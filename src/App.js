@@ -1,5 +1,4 @@
 import './App.css';
-import { Todo } from './Todo'
 import { useState} from 'react'
  
 function App() {
@@ -15,6 +14,23 @@ function App() {
   function handleChangeTodo(event) {
     setTodo({id: todos.length + 1, text: event.target.value})
   } 
+
+  function Todo() {
+
+    function handleDeleteTodo(todoToDelete) {
+        const filteredTodos = todos.filter(todo => todo.id !== todoToDelete.id )
+        setTodos(filteredTodos)
+       }
+  
+    return (
+      <ul>
+        {todos.map((todo) => <>
+        <li key={todo.id}>{todo.text}</li>
+        <button onClick={() => handleDeleteTodo(todo)}>delete</button>
+        </>)}
+    </ul>
+    )
+  }
  
   return (
   <>
@@ -27,4 +43,6 @@ function App() {
  );
 }
  
+
+
 export default App;
