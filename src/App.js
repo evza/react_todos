@@ -1,24 +1,38 @@
 import './App.css';
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
  
 function getTodoFromLocalStorage() {
   console.log('get from local storage')
   return localStorage.getItem('todo') || ''
 }
 
+function getTodos() {
+  // return fetch('http://...') или
+  return Promise.resolve([{id:1, text:'Lean React'}, {id:2, text:'Learn Redux'}])
+  // заглушка для fetch данных из backend
+}
+
 function App() {
  
  const [todo, setTodo] = useState(getTodoFromLocalStorage)
  const [todos, setTodos] = useState([]);
+//  const[loading, setLoading] = useState(false)
+
+//  useEffect(() => {
+//   setLoading(true)
+//   // fetch('hhtp').then(data =>setState(data))data.json()
+//   getTodos().then(data => setTodos(data))
+//  },[])
  
  useEffect(() => {
  console.log('todo changed')
  localStorage.setItem('todo', todo)
  },[todo])
  
- useEffect(()=> {
-   console.log('changed todos')
- },[todos])
+//  useEffect(()=> {
+//    console.log('changed todos')
+//  },[todos])
+
 
  function handleClick(event) {
  event.preventDefault()
@@ -36,6 +50,10 @@ function App() {
  setTodos(filteredTodos)
  }
  
+// if(loading) {
+//   return <div>Loading...</div>
+// }
+
  return (
  <div>
  <form >
@@ -43,11 +61,13 @@ function App() {
  <button type="submit" onClick={handleClick}>Save todo</button>
  </form>
  
+  {/* key повесили на реакт фрагмент */}
+
  <ul>
- {todos.map((todo) => <>
- <li key={todo.id}>{todo.text}</li>
+ {todos.map((todo) => <React.Fragment key = {todo.id}>
+ <li>{todo.text}</li>
  <button onClick={() => handleDeleteTodo(todo)}>delete</button>
- </>)}
+ </React.Fragment>)}
  </ul>
  </div>
  );
