@@ -1,48 +1,56 @@
 import './App.css';
-import { useState} from 'react'
+import { useState, useEffect } from 'react'
  
+function getTodoFromLocalStorage() {
+  console.log('get from local storage')
+  return localStorage.getItem('todo') || ''
+}
+
 function App() {
-  const [todo, setTodo] = useState({})
-  const [todos, setTodos] = useState([]);
  
-  function handleClick(event) {
-    event.preventDefault()
-    setTodos([...todos, todo])
-    setTodo({text: ''})
-  }
+ const [todo, setTodo] = useState(getTodoFromLocalStorage)
+ const [todos, setTodos] = useState([]);
  
-  function handleChangeTodo(event) {
-    setTodo({id: todos.length + 1, text: event.target.value})
-  } 
+ useEffect(() => {
+ console.log('todo changed')
+ localStorage.setItem('todo', todo)
+ },[todo])
+ 
+ useEffect(()=> {
+   console.log('changed todos')
+ },[todos])
 
-  function Todo() {
-
-    function handleDeleteTodo(todoToDelete) {
-        const filteredTodos = todos.filter(todo => todo.id !== todoToDelete.id )
-        setTodos(filteredTodos)
-       }
-  
-    return (
-      <ul>
-        {todos.map((todo) => <>
-        <li key={todo.id}>{todo.text}</li>
-        <button onClick={() => handleDeleteTodo(todo)}>delete</button>
-        </>)}
-    </ul>
-    )
-  }
+ function handleClick(event) {
+ event.preventDefault()
+ setTodos([...todos, {id: todos.length + 1, text: todo}])
+ setTodo('')
+ }
  
-  return (
-  <>
-    <form >
-    <input onChange={handleChangeTodo} value={todo.text}></input>
-    <button type="submit" onClick={handleClick}>Save todo</button>
-    </form>     
-    <Todo/>
-  </>
+ function handleChangeTodo(event) {
+ setTodo(event.target.value)
+ }
+ 
+ function handleDeleteTodo(todoToDelete) {
+ 
+ const filteredTodos = todos.filter(todo => todo.id !== todoToDelete.id )
+ setTodos(filteredTodos)
+ }
+ 
+ return (
+ <div>
+ <form >
+ <input onChange={handleChangeTodo} value={todo}></input>
+ <button type="submit" onClick={handleClick}>Save todo</button>
+ </form>
+ 
+ <ul>
+ {todos.map((todo) => <>
+ <li key={todo.id}>{todo.text}</li>
+ <button onClick={() => handleDeleteTodo(todo)}>delete</button>
+ </>)}
+ </ul>
+ </div>
  );
 }
  
-
-
 export default App;
